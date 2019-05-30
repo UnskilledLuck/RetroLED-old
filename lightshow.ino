@@ -1,13 +1,10 @@
-
 #include <FastLED.h>
 
 #define LED_PIN 2
 #define NUM_LEDS 140
 
 CRGB leds[NUM_LEDS];
-int red = 10;
-int green = 0;
-int blue = 0;
+
 
 bool checkPinReallyOn (int pin){
   int ms = 0;
@@ -212,44 +209,46 @@ bool xbox(int pin){
 }
 
 bool lightShow(int pin){
-  int count = 0; // counts the number of milliseconds the console outputs 0 volts
-  Serial.println("Start Lightshow");
-  int ledTime = 10;
-  while (count < 100){ // if the console has had no signal for 100ms it will turn off the light show.
-    // This is where the generic light show goes
-    if (ledTime == 20) { // updates leds every 20ms
-		// each led is equal to the value of the last.
-      for (int i = 139; i >= 1; i--) {
-        leds[i] = leds[i-1];
-      }
-    	leds[0] = CRGB(red,green,blue); // new led is given a colour
-      if (leds[0] == leds[3]){ // leds are in blocks of 4. once a block has been finished the new colour is updated.
-      	if (red == 10 && green < 10 && blue == 0) { green++; }
-      	else if (green == 10 && blue < 10 && red == 0) { blue++; }
-      	else if (blue == 10 && red < 10 && green == 0) { red++; }
-      	else if (red == 10 && blue > 0) { blue--; }
-      	else if (green == 10 && red > 0) { red--; }
-      	else if (blue == 10 && green > 0) { green--; }
-      }
-      FastLED.show();
-      ledTime = 0; // reset
-    }
-    ledTime++;
-	// check if getting 0 volts. if we are increment.
-    if (analogRead(pin) > 0) {
-      count = 0;
-    } else {
-      count ++;
-    }
-    delay(1);
-  }
-  
-  Serial.println("End Lightshow");
-  // Turn off leds
-  for (int i = 139; i >= 0; i--) {
-    leds[i] = CRGB(0,0,0);
-  }
-}
+	int count = 0; // counts the number of milliseconds the console outputs 0 volts
+	Serial.println("Start Lightshow");
+	int ledTime = 10;
+	int red = 10;
+	int green = 0;
+	int blue = 0;
+	while (count < 100){ // if the console has had no signal for 100ms it will turn off the light show.
+		// This is where the generic light show goes
+		if (ledTime == 20) { // updates leds every 20ms
+			// each led is equal to the value of the last.
+			for (int i = 139; i >= 1; i--) {
+				leds[i] = leds[i-1];
+			}
+			leds[0] = CRGB(red,green,blue); // new led is given a colour
+			if (leds[0] == leds[3]){ // leds are in blocks of 4. once a block has been finished the new colour is updated.
+				if (red == 10 && green < 10 && blue == 0) { green++; }
+				else if (green == 10 && blue < 10 && red == 0) { blue++; }
+				else if (blue == 10 && red < 10 && green == 0) { red++; }
+				else if (red == 10 && blue > 0) { blue--; }
+				else if (green == 10 && red > 0) { red--; }
+				else if (blue == 10 && green > 0) { green--; }
+			}
+			FastLED.show();
+			ledTime = 0; // reset
+		}
+		ledTime++;
+		// check if getting 0 volts. if we are increment.
+		if (analogRead(pin) > 0) {
+		  count = 0;
+		} else {
+		  count ++;
+		}
+		delay(1);
+	}
+	// Turn off leds
+	for (int i = 139; i >= 0; i--) {
+		leds[i] = CRGB(0,0,0);
+	}
+	Serial.println("End Lightshow");
+}// END LIGHTSHOW
 
 void setup() {
   Serial.begin(9600);
