@@ -1,10 +1,10 @@
+// current
 #include <FastLED.h>
 
 #define LED_PIN 2
 #define NUM_LEDS 140
 
 CRGB leds[NUM_LEDS];
-
 
 bool checkPinReallyOn (int pin){
   int ms = 0;
@@ -16,6 +16,12 @@ bool checkPinReallyOn (int pin){
   } else {
     return false;
   }
+}
+
+void allLedsOff (){
+	for (int i = 0; i <= 139; i++) {
+		leds[i] = CRGB(0,0,0);
+	}
 }
 
 bool masterSystem(int pin){
@@ -40,6 +46,7 @@ bool saturn(int pin){
   // Startup show
   if (checkPinReallyOn(pin) == true){
     Serial.println("Saturn");
+	// smashing animation
     delay(5000);
     return true;
   } else return false;
@@ -49,6 +56,27 @@ bool dreamcast(int pin){
   // Startup show
   if (checkPinReallyOn(pin) == true) {
     Serial.println("Dreamcast");
+	// white
+	for (int i = 0; i <= 60; i++){
+		for (int d = 0; d <= 139; d++){
+			leds[d] = CRGB(i,i,i);
+		}
+		FastLED.show();
+		delay(20);
+	}
+	
+	// red swirl
+	for (int s = 0; s <= 4; s++){
+		for (int i = 0; i <= 139; i++){
+			int x = i + 21;
+			if (x > 139) x -= 140;
+			leds[x] = CRGB(255,0,0);
+			x = i + 17;
+			if (x > 139) x -= 140;
+			leds[x] = CRGB(60,60,60);
+      FastLED.show();
+		}
+	}
     delay(5000);
     return true;
   } else return false;
@@ -85,7 +113,58 @@ bool n64(int pin){
   // Startup show
   if (checkPinReallyOn(pin) == true){
     Serial.println("Nintendo 64");
-    delay(5000);
+	delay(300);
+	for (int i = 0; i <= 255; i++) {
+		for (int d = 0; d <= 38; d++) {
+			leds[d] = CRGB(0,0,i);
+		}
+		for (int d = 39; d <= 69; d++) {
+			leds[d] = CRGB(i, i, 0);
+		}
+		for (int d = 70; d <= 109; d++) {
+			leds[d] = CRGB(i,0,0);
+		}
+		for (int d = 109; d <= 139; d++) {
+			leds[d] = CRGB(0,i,0);
+		}
+		FastLED.show();
+		delay(4);
+	}
+    delay(1000);
+	for (int i = 0; i <= 255; i++) {
+		for (int d = 0; d <= 38; d++) {
+			leds[d] = CRGB(i,i,255);
+		}
+		for (int d = 39; d <= 69; d++) {
+			leds[d] = CRGB(255, 255, i);
+		}
+		for (int d = 70; d <= 109; d++) {
+			leds[d] = CRGB(255,i,i);
+		}
+		for (int d = 109; d <= 139; d++) {
+			leds[d] = CRGB(i,255,i);
+		}
+		FastLED.show();
+		delay(4);
+	}
+	delay(1000);
+	for (int i =255; i >= 0; i--) {
+		for (int d = 0; d <= 38; d++) {
+			leds[d] = CRGB(i,i,i);
+		}
+		for (int d = 39; d <= 69; d++) {
+			leds[d] = CRGB(i, i, i);
+		}
+		for (int d = 70; d <= 109; d++) {
+			leds[d] = CRGB(i,i,i);
+		}
+		for (int d = 109; d <= 139; d++) {
+			leds[d] = CRGB(i,i,i);
+		}
+		FastLED.show();
+		delay(1);
+	}
+    delay(2000);
     return true;
   } else return false;
 } // END N64
@@ -99,6 +178,19 @@ bool gamecube(int pin){
     
       int count = 1; // for working out when the 6th led is needed.
       delay(2000);
+	  
+	  // cube drops
+	  for (int i = 0; i <= 39; i++){
+		  leds[i] = CRGB(75,0,130);
+	  }
+	  FastLED.show();
+	  delay(100);
+	  for (int i = 0; i <= 39; i++){
+		  leds[i] = CRGB(0,0,0);
+	  }
+	  FastLED.show();
+	  delay(100);
+	  
       for (int i = 0; i <= 139; ){
         // turns off the previous leds. 
           for (int j = 6; j > 1; j--){
@@ -128,7 +220,7 @@ bool gamecube(int pin){
           count++;
           if (count == 6) count = 0;
           FastLED.show();
-          delay (130); // timing between notes
+          delay (110); // timing between notes
         }
       
       // after sequence turn off leds
@@ -137,7 +229,7 @@ bool gamecube(int pin){
           leds[x] = CRGB(0,0,0);
         }
         FastLED.show();
-        delay (400); // wait for final note
+        delay (250); // wait for final note
       
       // Turn on all leds then fade
       int red = 75;
@@ -192,6 +284,7 @@ bool gamecube(int pin){
 
 bool wii(int pin){
   // Startup show
+  // adapt for boot
   if (checkPinReallyOn(pin) == true){ 
 	Serial.println("Wii");
     delay(5000);
@@ -209,46 +302,47 @@ bool xbox(int pin){
 }
 
 bool lightShow(int pin){
-	int count = 0; // counts the number of milliseconds the console outputs 0 volts
-	Serial.println("Start Lightshow");
-	int ledTime = 10;
-	int red = 10;
-	int green = 0;
-	int blue = 0;
-	while (count < 100){ // if the console has had no signal for 100ms it will turn off the light show.
-		// This is where the generic light show goes
-		if (ledTime == 20) { // updates leds every 20ms
-			// each led is equal to the value of the last.
-			for (int i = 139; i >= 1; i--) {
-				leds[i] = leds[i-1];
-			}
-			leds[0] = CRGB(red,green,blue); // new led is given a colour
-			if (leds[0] == leds[3]){ // leds are in blocks of 4. once a block has been finished the new colour is updated.
-				if (red == 10 && green < 10 && blue == 0) { green++; }
-				else if (green == 10 && blue < 10 && red == 0) { blue++; }
-				else if (blue == 10 && red < 10 && green == 0) { red++; }
-				else if (red == 10 && blue > 0) { blue--; }
-				else if (green == 10 && red > 0) { red--; }
-				else if (blue == 10 && green > 0) { green--; }
-			}
-			FastLED.show();
-			ledTime = 0; // reset
-		}
-		ledTime++;
-		// check if getting 0 volts. if we are increment.
-		if (analogRead(pin) > 0) {
-		  count = 0;
-		} else {
-		  count ++;
-		}
-		delay(1);
-	}
-	// Turn off leds
-	for (int i = 139; i >= 0; i--) {
-		leds[i] = CRGB(0,0,0);
-	}
-	Serial.println("End Lightshow");
-}// END LIGHTSHOW
+  int count = 0; // counts the number of milliseconds the console outputs 0 volts
+  Serial.println("Start Lightshow");
+  int ledTime = 10;
+  int red = 10;
+  int green = 0;
+  int blue = 0;
+  while (count < 100){ // if the console has had no signal for 100ms it will turn off the light show.
+    // This is where the generic light show goes
+    if (ledTime == 20) { // updates leds every 20ms
+		// each led is equal to the value of the last.
+      for (int i = 139; i >= 1; i--) {
+        leds[i] = leds[i-1];
+      }
+    	leds[0] = CRGB(red,green,blue); // new led is given a colour
+      if (leds[0] == leds[3]){ // leds are in blocks of 4. once a block has been finished the new colour is updated.
+      	if (red == 10 && green < 10 && blue == 0) { green++; }
+      	else if (green == 10 && blue < 10 && red == 0) { blue++; }
+      	else if (blue == 10 && red < 10 && green == 0) { red++; }
+      	else if (red == 10 && blue > 0) { blue--; }
+      	else if (green == 10 && red > 0) { red--; }
+      	else if (blue == 10 && green > 0) { green--; }
+      }
+      FastLED.show();
+      ledTime = 0; // reset
+    }
+    ledTime++;
+	// check if getting 0 volts. if we are increment.
+    if (analogRead(pin) > 0) {
+      count = 0;
+    } else {
+      count ++;
+    }
+    delay(1);
+  }
+  
+  Serial.println("End Lightshow");
+  // Turn off leds
+  for (int i = 139; i >= 0; i--) {
+    leds[i] = CRGB(0,0,0);
+  }
+}
 
 void setup() {
   Serial.begin(9600);
@@ -261,6 +355,7 @@ int ledCounter = 0;
 int ledOn = 0;
 while(true){
   leds[ledOn] = CRGB(50,50,50);
+  FastLED.show();
   // if we're looking for input
   if (currentPin == -1) {
     for (int x = 0; x <= 10; x++){
@@ -296,7 +391,7 @@ while(true){
     if (definitelyOn == true) lightShow(currentPin);
     currentPin = -1;
   }
-  if (ledCounter == 500){
+  if (ledCounter == 5 ){
 	  Serial.println("led on");
 	  leds[ledOn] = CRGB(0,0,0);
 	  ledOn++;
