@@ -189,12 +189,12 @@ bool gamecube(int pin){
 		  leds[i] = CRGB(0,0,0);
 	  }
 	  FastLED.show();
-	  delay(100);
+	  delay(150);
 	  
-      for (int i = 0; i <= 139; ){
+      for (int i = 139; i >= 0; ){
         // turns off the previous leds. 
           for (int j = 6; j > 1; j--){
-            int x = i + 20 - j; // The 20 is how many leds to the center of the screen
+            int x = i + 19 + j; // The 19 is how many leds to the center of the screen
             if (x > 139) x = x - 140;
             if (x < 0) x = x + 140;
             leds[x] = CRGB(0,0,0);
@@ -202,25 +202,25 @@ bool gamecube(int pin){
         
         //Turn on the next sequence of leds
           for (int j = 0; j < 4; j++){
-            int x = i + 20;
+            int x = i + 19;
             if (x > 139) x = x - 140;
             if (x < 0) x = x + 140;
             leds[x] = CRGB(75,0,130); // Indigo
-            i++;
+            i--;
           }
         
         // Turn on an extra led if required
           if (count >= 1 && count <= 3){
-            int x = i + 20;
+            int x = i + 19;
             if (x > 139) x = x - 140;
             if (x < 0) x = x + 140;
             leds[x] = CRGB(75,0,130);
-            i++;
+            i--;
           }
           count++;
           if (count == 6) count = 0;
           FastLED.show();
-          delay (110); // timing between notes
+          delay (108); // timing between notes
         }
       
       // after sequence turn off leds
@@ -308,7 +308,7 @@ bool lightShow(int pin){
   int red = 10;
   int green = 0;
   int blue = 0;
-  while (count < 100){ // if the console has had no signal for 100ms it will turn off the light show.
+  while (count < 1000){ // if the console has had no signal for 100ms it will turn off the light show.
     // This is where the generic light show goes
     if (ledTime == 20) { // updates leds every 20ms
 		// each led is equal to the value of the last.
@@ -339,9 +339,7 @@ bool lightShow(int pin){
   
   Serial.println("End Lightshow");
   // Turn off leds
-  for (int i = 139; i >= 0; i--) {
-    leds[i] = CRGB(0,0,0);
-  }
+  allLedsOff();
 }
 
 void setup() {
