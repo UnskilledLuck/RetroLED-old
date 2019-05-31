@@ -177,13 +177,19 @@ bool gamecube(int pin){
     // 140/25 is about 5 leds each with 6 3/5 times.
     
       int count = 1; // for working out when the 6th led is needed.
-      delay(2000);
+      delay(1860);
 	  
 	  // cube drops
 	  for (int i = 0; i <= 39; i++){
 		  leds[i] = CRGB(75,0,130);
 	  }
 	  FastLED.show();
+	  for (int i = 0; i <= 19; i++){
+		  led[i] = CRGB(0,0,0);
+		  led[39 - i] = CRGB(0,0,0);
+		  FastLED.show();
+		  delay(2);
+	  }
 	  delay(100);
 	  for (int i = 0; i <= 39; i++){
 		  leds[i] = CRGB(0,0,0);
@@ -225,7 +231,7 @@ bool gamecube(int pin){
       
       // after sequence turn off leds
         for (int j = 8; j > 1; j--){
-          int x = 22 - j;
+          int x = 18 + j;
           leds[x] = CRGB(0,0,0);
         }
         FastLED.show();
